@@ -1,0 +1,6 @@
+three.js/
+*~
+*.bin
+*.glb
+*.gltf
+*.obj
