@@ -1,137 +1,44 @@
 <!DOCTYPE html>
+<!-- (C) 2019 David J. Kalbfleisch -->
+
 <html lang="en">
     <head>
-        <title>visibility</title>
+        <title>visibility demo</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-        <link rel="stylesheet" type="text/css" href="style.css">
+        <meta name="description" content="Move around a city while geometry streams to you.  No pre-downloading is necessary!">
+        <meta name="keywords" content="geometry, visibility, game, 3d, city, streaming">
+        <link rel="stylesheet" type="text/css" href="visibility.css">
 
-        <script src="three.js/build/three.js"></script>
+        <script src="three.js/build/three.min.js"></script>
         <script src="three.js/examples/js/loaders/GLTFLoader.js"></script>
         <script src="three.js/examples/js/Detector.js"></script>
-        <script src="three.js/examples/js/libs/stats.min.js"></script>
+        <script src="three.js/examples/js/controls/OrbitControls.js"></script>
+        <script src="visibility_demo.js"></script>
     </head>
 
     <body>
-        <div id="first_person"><noscript>JavaScript is required.</noscript></div>
-        <div id="third_person"><noscript>JavaScript is required.</noscript></div>
+        <div id="first_person" class="container"><noscript>JavaScript is required.</noscript></div>
+
+        <ul>
+            <li>S - strafe left</li>
+            <li>F - strafe right</li>
+            <li>E - forward</li>
+            <li>D - backward</li>
+            <li>J - turn left</li>
+            <li>L - turn right</li>
+            <li>I - look up</li>
+            <li>K - look down</li>
+        </ul>
+
+        <div id="third_person" class="container"><noscript>JavaScript is required.</noscript></div>
+
+        <p>Click, drag, mouse scroll, and use the arrow keys to control the third person view.  Note the missing geometry that is not obviously missing in the first person view.</p>
 
         <script>
-
-            if (!Detector.webgl)
-                Detector.addGetWebGLMessage();
-
-            // Globals
-            var container_first_person = document.getElementById("first_person");
-            var container_third_person = document.getElementById("third_person");
-            var camera_first_person, camera_third_person;
-            var renderer_first_person, renderer_third_person;
-            var scene, stats;
-
-            init();
-            animate();
-
-            function init()
-            {
-                // Camera setup
-                camera_first_person = new THREE.PerspectiveCamera(45, container_first_person.clientWidth / container_first_person.clientHeight, 0.25, 20);
-                camera_first_person.position.set(1.38171, 0, 0);
-                camera_first_person.rotateY(Math.PI / 2);  // Rotate counter-clockwise 90 degrees
-
-                camera_third_person = new THREE.PerspectiveCamera(45, container_third_person.clientWidth / container_third_person.clientHeight, 0.25, 20);
-                camera_third_person.position.set(0, 5, 5);
-				camera_third_person.lookAt(camera_first_person.position);
-
-                // envmap
-                var path = 'three.js/examples/textures/cube/Bridge2/';
-                var format = '.jpg';
-                var envMap = new THREE.CubeTextureLoader().load( [
-                    path + 'posx' + format, path + 'negx' + format,
-                    path + 'posy' + format, path + 'negy' + format,
-                    path + 'posz' + format, path + 'negz' + format
-                ] );
-
-                scene = new THREE.Scene();
-                scene.background = envMap;
-
-                var light = new THREE.HemisphereLight(0xbbbbff, 0x444422);
-                light.position.set(0, 1, 0);
-                scene.add(light);
-
-                // model
-                var loader = new THREE.GLTFLoader();
-                loader.load("maze.glb", function ( gltf ) {
-
-                    gltf.scene.traverse( function ( child ) {
-                        if ( child.isMesh )
-                            child.material.envMap = envMap;
-                    } );
-
-                    scene.add( gltf.scene );
-
-                } );
-
-                // First person setup
-                renderer_first_person = new THREE.WebGLRenderer({antialias: true});
-                renderer_first_person.setPixelRatio(window.devicePixelRatio);
-                renderer_first_person.gammaOutput = true;
-                renderer_first_person.setSize(container_first_person.clientWidth, container_first_person.clientHeight);
-                container_first_person.appendChild(renderer_first_person.domElement);
-
-                // Third person setup
-                renderer_third_person = new THREE.WebGLRenderer({antialias: true});
-                renderer_third_person.setPixelRatio(window.devicePixelRatio);
-                renderer_third_person.gammaOutput = true;
-                renderer_third_person.setSize(container_third_person.clientWidth, container_third_person.clientHeight);
-                container_third_person.appendChild(renderer_third_person.domElement);
-
-                // Add listeners.
-                document.addEventListener("keydown", onKeyDown, false);
-                window.addEventListener("resize", onWindowResize);
-
-                // stats
-                stats = new Stats();
-                container_first_person.appendChild(stats.dom);
-            }
-
-            function onWindowResize()
-            {
-                camera_first_person.aspect = container_first_person.clientWidth / container_first_person.clientHeight;
-                camera_first_person.updateProjectionMatrix();
-                renderer_first_person.setSize(container_first_person.clientWidth, container_first_person.clientHeight);
-
-                camera_third_person.aspect = container_third_person.clientWidth / container_third_person.clientHeight;
-                camera_third_person.updateProjectionMatrix();
-                renderer_third_person.setSize(container_third_person.clientWidth, container_third_person.clientHeight);
-            }
-
-            function onKeyDown(event)
-            {
-                switch(event.key)
-                {
-//                    case "ArrowUp":
-//                        camera_first_person.rotateX(Math.PI / 4);
-//                        break;
-                    case "ArrowRight":
-                        camera_first_person.rotateY(-Math.PI / 4);
-                        break;
-//                    case "ArrowDown":
-//                        camera_first_person.rotateX(-Math.PI / 4);
-//                        break;
-                    case "ArrowLeft":
-                        camera_first_person.rotateY(Math.PI / 4);
-                        break;
-                }
-            }
-
-            function animate()
-            {
-                requestAnimationFrame(animate);
-                renderer_first_person.render(scene, camera_first_person);
-                renderer_third_person.render(scene, camera_third_person);
-                stats.update();
-            }
-
+            if (init())
+                animate();
         </script>
     </body>
 </html>
+

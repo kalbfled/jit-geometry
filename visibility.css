@@ -1,0 +1,58 @@
+/* (C) 2019 David J. Kalbfleisch */
+
+body
+{
+    background-color: black;
+    color: white;
+    font-family: Monospace;
+    height: 100vh;
+    margin: 0;
+    /*
+    TODO - This shouldn't be necessary.  Why am I getting a scroll bar in the first place?
+    https://stackoverflow.com/questions/34752039/100vh-results-in-scroll-bar
+    */
+    overflow: hidden;
+}
+
+div.container
+{
+    background-color: rgb(200, 200, 200);
+    border: solid thin white;
+    height: 40%;
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 200px;
+    min-width: 320px;
+    width: 90%;
+}
+
+#first_person
+{
+    margin-top: 2.5%;
+}
+
+#third_person
+{
+    margin-bottom: 0;
+}
+
+ul
+{
+    list-style-type: none;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+    text-align: center;
+}
+
+li
+{
+    display: inline;
+    margin-right: 0.5in;
+}
+
+p
+{
+    max-width: 90%;
+    text-align: center;
+}
