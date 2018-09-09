@@ -1,0 +1,66 @@
+/* (C) 2019 David J. Kalbfleisch */
+
+body
+{
+    background-color: black;
+    box-sizing: border-box;
+    color: white;
+    font-family: Monospace;
+    height: 100vh;
+    margin: 0;
+    padding-top: 5px;
+}
+
+ul, p
+{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+div.container
+{
+    background-color: rgb(200, 200, 200);
+    border: solid thin white;
+    height: 40%;
+    margin: 0 auto;
+    max-width: 1750px;
+    min-height: 200px;
+    min-width: 320px;
+    width: 90%;
+}
+
+ul
+{
+    list-style-type: none;
+    margin-top: 0;
+    padding: 0;
+    text-align: center;
+}
+
+li
+{
+    display: inline;
+    margin-right: 0.5in;
+}
+
+button
+{
+    background-color: #00ff00;
+    display: block;
+    font-size: 18px;
+    margin: 5px auto;
+}
+
+a
+{
+    color: black;
+    text-decoration: none;
+}
+
+p
+{
+    margin-bottom: 0;
+    max-width: 90%;
+    text-align: center;
+}
+
