@@ -3,18 +3,14 @@
 
 <html lang="en">
     <head>
-        <title>visibility demo</title>
+        <title>Just-In-Time Geometry</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-        <meta name="description" content="Move around a city while geometry streams to you.  No pre-downloading is necessary!">
-        <meta name="keywords" content="geometry, visibility, game, 3d, city, streaming">
+        <meta name="description" content="Move around a city while geometry is fetched and loaded just-in-time.  No pre-downloading is necessary!">
+        <meta name="keywords" content="geometry, visibility, game, 3d, city, just-in-time">
         <link rel="stylesheet" type="text/css" href="visibility.css">
-
-        <script src="three.js/build/three.min.js"></script>
-        <script src="three.js/examples/js/loaders/GLTFLoader.js"></script>
-        <script src="three.js/examples/js/Detector.js"></script>
-        <script src="three.js/examples/js/controls/OrbitControls.js"></script>
-        <script src="visibility_demo.js"></script>
+        <!-- TODO - When this becomes a module, import it instead. -->
+        <script src="three.js/examples/js/WebGL.js"></script>
     </head>
 
     <body>
@@ -35,9 +31,16 @@
 
         <p>Click, drag, mouse scroll, and use the arrow keys to control the third person view.  Note the missing geometry that is not obviously missing in the first person view.</p>
 
-        <script>
-            if (init())
-                animate();
+        <script type="module">
+            import { init, animate } from "./visibility_demo.js"
+
+            if (!WEBGL.isWebGLAvailable())
+                window.alert(WEBGL.getWebGLErrorMessage());
+            else
+            {
+                if (init())
+                    animate();
+            }       
         </script>
     </body>
 </html>

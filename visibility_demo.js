@@ -1,12 +1,6 @@
 /*
 (C) 2019 David J. Kalbfleisch
 
-Dependencies in ./three.js/:
-    build/three.min.js
-    examples/js/loaders/GLTFLoader.js
-    examples/js/Detector.js
-    examples/js/controls/OrbitControls.js
-
 The coordinate system is right-handed with +Y pointing up.
 https://github.com/KhronosGroup/glTF/tree/master/specification/2.0#coordinate-system-and-units
 
@@ -16,16 +10,17 @@ https://github.com/KhronosGroup/glTF/tree/master/specification/2.0#cameras
 
 "use strict";
 
+import * as THREE from "./three.js/build/three.module.js";
+import { GLTFLoader } from "./three.js/examples/jsm/loaders/GLTFLoader.js";
+import { OrbitControls } from "./three.js/examples/jsm/controls/OrbitControls.js";
 
 // Globals
 const box = new THREE.Box3();
 const camera_and_cone = new THREE.Group();
-const gltf_loader = new THREE.GLTFLoader();
+const gltf_loader = new GLTFLoader();
 const keys = {};
 const loaded_vcs = new Set();
 const scene = new THREE.Scene();
-const world_min = new THREE.Vector3(-1276.91406, -32.21, -843.98517);
-const world_max = new THREE.Vector3(915.56909, -32.21, 968.18634);
 const world_y_axis = new THREE.Vector3(0, 1, 0);
 var active_view_cell;
 var camera_first_person, camera_third_person;
@@ -33,6 +28,10 @@ var container_first_person, container_third_person;
 var cone;
 var controls;
 var renderer_first_person, renderer_third_person;
+
+// These are used to clamp the position of camera_and_cone to the inside of the boundary view cells.
+const world_min = new THREE.Vector3(-1275.91406, -31.21, -842.98517);
+const world_max = new THREE.Vector3(914.56909, -31.21, 967.18634);
 
 // These booleans indicate the current view cell's proximity to scene boundaries.
 // The first current view cell is in the southeast corner of the scene.
@@ -53,19 +52,12 @@ function gltf_loader_onload(gltf)
     });
 
     // Add the loaded geometry to the global "scene".
-    // TODO - Instead of adding, use BufferGeometry.merge???  There would be fewer collision tests this way because there would be fewer objects.
     scene.add(gltf.scene);
 }
 
 
 function init()
 {
-    if (!Detector.webgl)
-    {
-        Detector.addGetWebGLMessage();
-        return false;
-    }
-
     // Load the initial geometry.
     active_view_cell = 8;
     loadVCmaybe(active_view_cell);
@@ -87,7 +79,7 @@ function init()
 
     camera_third_person = new THREE.PerspectiveCamera(49.1, container_third_person.clientWidth / container_third_person.clientHeight, 0.1, 3000);
     camera_third_person.position.set(vc8_center.x, 300, 1500);
-    controls = new THREE.OrbitControls(camera_third_person, container_third_person);
+    controls = new OrbitControls(camera_third_person, container_third_person);
 
     scene.background = new THREE.Color(0x222222);
 
@@ -231,11 +223,11 @@ function updateView()
 function collisionDetected(prospective_position)
 /* Return a boolean indicating if a collision will occur if the camera_and_cone group attempts to move to the given position. */
 {
-    console.assert(!prospective_position.equals(camera_and_cone.position), "Don't call this function unless there is prospective translational movement.")
+    console.assert(!prospective_position.equals(camera_and_cone.position), "Don't call this function unless there is prospective translational movement.");
 
     var direction = new THREE.Vector3();
     direction.subVectors(prospective_position, camera_and_cone.position).normalize();
-    const raycaster = new THREE.Raycaster(camera_and_cone.position, direction, 0, 1.1);
+    const raycaster = new THREE.Raycaster(camera_and_cone.position, direction, 0, 1.5);
     var intersections = [];
 
     scene.traverse(function(child)
@@ -407,7 +399,6 @@ function updateGeometry()
 
 function loadVCmaybe(vc)
 /* Load the given view cell, passed as an integer index, if it has not already been loaded. */
-// TODO - https://stackoverflow.com/questions/48636384/web-workers-for-loading-object-in-three-js
 {
     if (loaded_vcs.has(vc))
         // The view cell has already been loaded.
@@ -417,4 +408,7 @@ function loadVCmaybe(vc)
     gltf_loader.load("geometry/vc" + vc + ".gltf", gltf_loader_onload, null, function(error) {console.error(error);});
     loaded_vcs.add(vc);
 }
+
+
+export { animate, init };
 
