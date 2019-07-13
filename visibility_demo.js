@@ -11,15 +11,15 @@ https://github.com/KhronosGroup/glTF/tree/master/specification/2.0#cameras
 "use strict";
 
 import * as THREE from "./three.js/build/three.module.js";
-//import { GLTFLoader } from "./three.js/examples/jsm/loaders/GLTFLoader.js";
+import { GLTFLoader } from "./three.js/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "./three.js/examples/jsm/controls/OrbitControls.js";
 
 // Globals
 const box = new THREE.Box3();
 const camera_and_cone = new THREE.Group();
-//const gltf_loader = new GLTFLoader();
+const gltf_loader = new GLTFLoader();
 const keys = {};
-const scene = new THREE.Scene();
+const loaded_vcs = new Set();
 const world_y_axis = new THREE.Vector3(0, 1, 0);
 var active_view_cell;
 var camera_first_person, camera_third_person;
@@ -27,6 +27,7 @@ var container_first_person, container_third_person;
 var cone;
 var controls;
 var renderer_first_person, renderer_third_person;
+var scene;
 var worker;
 
 // These are used to clamp the position of camera_and_cone to the inside of the boundary view cells.
@@ -41,21 +42,6 @@ var not_north_scene_boundary = true;
 var not_south_scene_boundary = false;
 
 
-//function gltf_loader_onload(gltf)
-//{
-    // https://threejs.org/docs/index.html#api/en/core/Object3D.traverse
-//    gltf.scene.traverse(function(child)
-//    {
-//        if (child.isMesh)
-            // Turn off backface culling.
-//            child.material.side = THREE.DoubleSide;
-//    });
-
-    // Add the loaded geometry to the global "scene".
-//    scene.add(gltf.scene);
-//}
-
-
 function init()
 {
     if (!window.Worker)
@@ -64,17 +50,20 @@ function init()
         return false;
     }
 
+    scene = new THREE.Scene();
+
     // Create a web worker thread to load geometry without blocking the UI thread.
     worker = new Worker("visibility_worker.js");
-    worker.onmessage = function(event) {
-        // Add the loaded geometry to the global "scene".
-        scene.add(event.data);
+    worker.onmessage = function(event)
+    {
+        // Repplace the global scene with a new scene that includes the recently loaded geometry.
+        scene = event.data;
     };
     worker.onerror = function(error) { console.error(error); };
 
     // Load the initial geometry.
     active_view_cell = 8;
-    worker.postMessage(active_view_cell);
+    loadVCmaybe(active_view_cell);
 
     // Display the initial geometry's view cell.
     box.setFromCenterAndSize(new THREE.Vector3(778.66, -32.21, 855.02), new THREE.Vector3(273.82, 8.08, 226.32));
@@ -306,13 +295,13 @@ function updateGeometry()
         {
             console.debug("west boundary");
             if (not_west_scene_boundary)
-                worker.postMessage(active_view_cell - 1);
+                loadVCmaybe(active_view_cell - 1);
         }
         else if (east_vc_boundary)
         {
             console.debug("east boundary");
             if (not_east_scene_boundary)
-                worker.postMessage(active_view_cell + 1);
+                loadVCmaybe(active_view_cell + 1);
         }
 
         // north <-> south
@@ -320,35 +309,35 @@ function updateGeometry()
         {
             console.debug("north boundary");
             if (not_north_scene_boundary)
-                worker.postMessage(active_view_cell + 8);
+                loadVCmaybe(active_view_cell + 8);
         }
         else if (south_vc_boundary)
         {
             console.debug("south boundary");
             if (not_south_scene_boundary)
-                worker.postMessage(active_view_cell - 8);
+                loadVCmaybe(active_view_cell - 8);
         }
 
         // Diagonals
         if (west_vc_boundary && north_vc_boundary)
         {
             if (not_west_scene_boundary && not_north_scene_boundary)
-                worker.postMessage(active_view_cell + 7);
+                loadVCmaybe(active_view_cell + 7);
         }
         else if (east_vc_boundary && north_vc_boundary)
         {
             if (not_east_scene_boundary && not_north_scene_boundary)
-                worker.postMessage(active_view_cell + 9);
+                loadVCmaybe(active_view_cell + 9);
         }
         else if (east_vc_boundary && south_vc_boundary)
         {
             if (not_east_scene_boundary && not_south_scene_boundary)
-                worker.postMessage(active_view_cell - 7);
+                loadVCmaybe(active_view_cell - 7);
         }
         else if (west_vc_boundary && south_vc_boundary)
         {
             if (not_west_scene_boundary && not_south_scene_boundary)
-                worker.postMessage(active_view_cell - 9);
+                loadVCmaybe(active_view_cell - 9);
         }
     }
     else
@@ -412,17 +401,32 @@ function updateGeometry()
 }
 
 
-//function loadVCmaybe(vc)
+function loadVCmaybe(vc)
 /* Load the given view cell, passed as an integer index, if it has not already been loaded. */
-//{
-//    if (loaded_vcs.has(vc))
+{
+    if (loaded_vcs.has(vc))
         // The view cell has already been loaded.
-//        return;
+        return;
 
-//    console.info("Loading vc%d.gltf", vc);
-//   gltf_loader.load("geometry/vc" + vc + ".gltf", gltf_loader_onload, null, function(error) {console.error(error);});
-//    loaded_vcs.add(vc);
-//}
+    console.info("Loading vc%d.gltf", vc);
+    gltf_loader.load("geometry/vc" + vc + ".gltf", gltf_loader_onload, null, function(error) {console.error(error);});
+    loaded_vcs.add(vc);
+}
+
+
+function gltf_loader_onload(gltf)
+{
+    // https://threejs.org/docs/index.html#api/en/core/Object3D.traverse
+    gltf.scene.traverse(function(child)
+    {
+        if (child.isMesh)
+            // Turn off backface culling.
+            child.material.side = THREE.DoubleSide;
+    });
+
+    // Add the loaded geometry to the global "scene".
+    worker.postMessage([scene, gltf.scene]);
+}
 
 
 export { animate, init };
