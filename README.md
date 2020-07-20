@@ -6,6 +6,8 @@ One possible solution takes inspiration from the World Wide Web.  You probably c
 
 ## Proof of Concept
 
+**NOTE: This demo is outdated.  See the latest at https://www.buildtheoasis.com.**
+
 This repository implements a simple proof of concept for on demand delivery of a 3D scene, and it should work with any recent web browser except Internet Explorer.  It targets laptops, desktops, or any other device with a keyboard and sizable display.
 
 [LIVE DEMO](http://www.purdone.com/dave/visdemo/)
@@ -33,6 +35,8 @@ How this happens is the interesting part of the problem.  I performed this compu
 If you have a project for which this technique might be useful, you’re welcome to [contact me](http://www.purdone.com/dave/contact.php).  I am particularly interested in hearing from people who work on game engines, including plug-ins, and people who work to get 3D assets into games.
 
 ### Limitations of the Demo
+
+**NOTE: This demo is outdated.  The latest demo, available at https://www.buildtheoasis.com, has none of the limitations discussed here.**
 
 Please remember that this is a proof of concept.  My only intent is to demonstrate the visibility precomputation and just-in-time paradigm.
 
