@@ -56,6 +56,4 @@ Each glTF file contains the geometry visible from an associated box minus the ge
 
 ## Conclusion
 
-Please read the wiki, including [Further Investigation](https://github.com/kalbfled/jit-geometry/wiki/Further-Investigation) and the [FAQ](https://github.com/kalbfled/jit-geometry/wiki/FAQ), which discusses Google Stadia, using visibility precomputation to reduce overdraw, and other relevant topics.
-
 Thanks to [Herminio Nieves](https://www.cgtrader.com/herminio) for providing the [city model](https://free3d.com/3d-model/the-city-39441.html).
