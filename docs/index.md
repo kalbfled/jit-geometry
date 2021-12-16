@@ -38,10 +38,10 @@ The .zip file should work like a .dmg.  However, it is not digitally signed, and
 
 This Three.js-based demo should work with any modern web browser (not Internet Explorer) that supports WebGL.  Visit the assocated GitHub [repository](https://github.com/kalbfled/jit-geometry) for the source code and a discussion of limitations.
 
-[LIVE DEMO](http://www.purdone.com/dave/visdemo/)
+[LIVE DEMO](https://misc.davejk.me/visdemo/)
 
 ## Contact
 
-The developer desires to work with game makers to test the scalability and commercial potential of this method.  You can contact him [here](https://www.davejk.me/contact/).
+If this concept might be useful for your 3D world, you're welcome to [contact the developer](https://www.davejk.me/contact/).
 
-<footer><p>&copy; 2019, 2020 David James Kalbfleisch</p></footer>
+<footer><p>&copy; 2019, 2020, 2021 David James Kalbfleisch</p></footer>
