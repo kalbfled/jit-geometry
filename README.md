@@ -10,9 +10,9 @@ One possible solution takes inspiration from the World Wide Web.  You probably c
 
 This repository implements a simple proof of concept for on demand delivery of a 3D scene, and it should work with any recent web browser except Internet Explorer.  It targets laptops, desktops, or any other device with a keyboard and sizable display.
 
-[LIVE DEMO](http://www.purdone.com/dave/visdemo/)
+[LIVE DEMO](https://misc.davejk.me/visdemo/)
 
-The geometry files used in the live demo are not part of this repository, but you can download them [here](http://www.purdone.com/dave/visdemo/geometry.zip).
+The geometry files used in the live demo are not part of this repository, but you can download them [here](https://misc.davejk.me/visdemo/geometry.zip).
 
 [How to run things locally](https://threejs.org/docs/index.html#manual/en/introduction/How-to-run-things-locally)
 
@@ -30,9 +30,7 @@ From a third person view, we can see that only geometry visible from the first p
 
 In this demo, the world is subdivided into non-hierarchical volumes outlined by green boxes.  In practical terms, the basic problem is to compute which mesh faces are visible from each volume and to transmit the visible faces for a given volume before the camera moves into that volume.
 
-How this happens is the interesting part of the problem.  I performed this computation offline using a **patent pending** process and used the results to create the [glTF](https://www.khronos.org/gltf/) files used in the demo.  I am interested in working with game developers to determine if this process can scale up for commercial viability.
-
-If you have a project for which this technique might be useful, you’re welcome to [contact me](http://www.purdone.com/dave/contact.php).  I am particularly interested in hearing from people who work on game engines, including plug-ins, and people who work to get 3D assets into games.
+How this happens is the interesting part of the problem.  I performed this computation offline using a **patent pending** process and used the results to create the [glTF](https://www.khronos.org/gltf/) files used in the demo.  If you have a project for which this technique might be useful, please [contact me](https://www.davejk.me/contact/).
 
 ### Limitations of the Demo
 
@@ -54,6 +52,6 @@ Each glTF file contains the geometry visible from an associated box minus the ge
 
 * You will observe [Z-fighting](https://en.wikipedia.org/wiki/Z-fighting) because the city model I used has overlapping geometry.  This is not related to my method for visibility precomputation.
 
-## Conclusion
+## Thanks
 
 Thanks to [Herminio Nieves](https://www.cgtrader.com/herminio) for providing the [city model](https://free3d.com/3d-model/the-city-39441.html).
