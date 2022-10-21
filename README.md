@@ -6,7 +6,7 @@ One possible solution takes inspiration from the World Wide Web.  You probably c
 
 ## Proof of Concept
 
-**NOTE: This demo is outdated.  See the latest at https://www.buildtheoasis.com.**
+**NOTE: This demo is outdated.  See the latest at https://buildtheoasis.davejk.me.**
 
 This repository implements a simple proof of concept for on demand delivery of a 3D scene, and it should work with any recent web browser except Internet Explorer.  It targets laptops, desktops, or any other device with a keyboard and sizable display.
 
@@ -30,11 +30,11 @@ From a third person view, we can see that only geometry visible from the first p
 
 In this demo, the world is subdivided into non-hierarchical volumes outlined by green boxes.  In practical terms, the basic problem is to compute which mesh faces are visible from each volume and to transmit the visible faces for a given volume before the camera moves into that volume.
 
-How this happens is the interesting part of the problem.  I performed this computation offline using a **patent pending** process and used the results to create the [glTF](https://www.khronos.org/gltf/) files used in the demo.  If you have a project for which this technique might be useful, please [contact me](https://www.davejk.me/contact/).
+How this happens is the interesting part of the problem.  I performed this computation offline and used the results to create the [glTF](https://www.khronos.org/gltf/) files used in the demo.  If you have a project for which this technique might be useful, please [contact me](https://www.davejk.me/contact/).
 
 ### Limitations of the Demo
 
-**NOTE: This demo is outdated.  The latest demo, available at https://www.buildtheoasis.com, has none of the limitations discussed here.**
+**NOTE: This demo is outdated.  The latest demo, available at https://buildtheoasis.davejk.me, has none of the limitations discussed here.**
 
 Please remember that this is a proof of concept.  My only intent is to demonstrate the visibility precomputation and just-in-time paradigm.
 
@@ -44,7 +44,7 @@ Please remember that this is a proof of concept.  My only intent is to demonstra
 
 * All content is served statically.
 
-As a consequence, a lot of geometry is sent multiple times because it is visible from many volumes.  This increases the total data transmission size, and you might notice a slow down as you walk around the scene due to the extra computation required to process the duplicates (overdraw).
+As a consequence, a lot of geometry is sent multiple times because it is visible from many volumes.  This increases the total data transmission size, and you might notice a slow down as you walk around the scene due to the extra computation required to process the duplicates.
 
 Each glTF file contains the geometry visible from an associated box minus the geometry visible from the initial box.  In production, content should be served dynamically.  The server session should maintain a record of which volumes the user has already visited, and it should not resend any of the geometry visible from any of those volumes.
 
